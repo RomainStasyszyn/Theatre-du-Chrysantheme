@@ -20,3 +20,10 @@ subvention(id_subv, id_repr, nom_mècène, valeur);
 dépense(id_depe, id_repr, date, coût);
 
 thêatre(entrée, année, mois, dépenses, recette, profit);
+
+
+Ajouts possibles :
+  - pour subvention on pourrait ajouter un attribut action car une subvention est donnée pour réaliser quelque chose de particulier.
+  - pour représentation on pourrait ajouter un attribut id_theatre (théâtre ayant mise en scène le spectacle et qui le joue).
+  - pour vente_piece on pourrait ajouter un attribut id_theatre (théâtre qui achète et va donc mettre en scène le spectacle de la compagnie courante).
+  - pour les dépenses on ajoute une action / un objectif qui entraine cette dépense ?
