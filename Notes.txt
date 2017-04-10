@@ -1,0 +1,22 @@
+Tables possibles :
+
+représentation(id_repr, id_spec, nb_places, date, durée);
+
+interne(nb_billet_vendu); -> hérit. représentation
+externe(lieu, pays); -> hérit. représentation
+
+spectacle(id_spec, nom_spec, id_comp);
+compagnie(id_comp, nom_comp);
+
+place(num_place, status);
+réservation(num_reser, num_place, nom_personne, date_limite);
+
+tarif(normal, réduit);
+
+achat_piece(id_acha, id_spec, date, valeur);
+vente_piece(id_vent, id_spec, date, valeur);
+
+subvention(id_subv, id_repr, nom_mècène, valeur);
+dépense(id_depe, id_repr, date, coût);
+
+thêatre(entrée, année, mois, dépenses, recette, profit);
