@@ -6,7 +6,7 @@ interne(nb_billet_vendu); -> hérit. représentation
 externe(lieu, pays); -> hérit. représentation
 
 spectacle(id_spec, nom_spec, id_comp);
-compagnie(id_comp, nom_comp);
+compagnie(id_comp, nom_comp, metteur_en_scène);
 
 place(num_place, status);
 réservation(num_reser, num_place, nom_personne, date_limite);
@@ -17,13 +17,20 @@ achat_piece(id_acha, id_spec, date, valeur);
 vente_piece(id_vent, id_spec, date, valeur);
 
 subvention(id_subv, id_repr, nom_mècène, valeur);
-dépense(id_depe, id_repr, date, coût);
+dépense(id_depe, id_repr, date, descr, coût);
 
 thêatre(entrée, année, mois, dépenses, recette, profit);
 
 
 Ajouts possibles :
-  - pour subvention on pourrait ajouter un attribut action car une subvention est donnée pour réaliser quelque chose de particulier.
-  - pour représentation on pourrait ajouter un attribut id_theatre (théâtre ayant mise en scène le spectacle et qui le joue).
-  - pour vente_piece on pourrait ajouter un attribut id_theatre (théâtre qui achète et va donc mettre en scène le spectacle de la compagnie courante).
-  - pour les dépenses on ajoute une action / un objectif qui entraine cette dépense ?
+    - pour subvention on pourrait ajouter un attribut action car une subvention est donnée pour réaliser quelque chose de particulier.
+        -> je l'associe à une représentation donc l'action déjà défini non ?
+
+    - pour représentation on pourrait ajouter un attribut id_theatre (théâtre ayant mise en scène le spectacle et qui le joue).
+        -> on a id_spec, dans représentation, qui donne une compagnie avec id_comp qui est celle qui a joué dans le spectacle [je rajoute metteur en scène dans la table 'compagnie']
+
+    - pour vente_piece on pourrait ajouter un attribut id_theatre (théâtre qui achète et va donc mettre en scène le spectacle de la compagnie courante).
+        -> il y a id_spec qui nous permet de retrouver la compagnie qui nous a vendu la pièce [idem avec achat]
+
+    - pour les dépenses on ajoute une action / un objectif qui entraine cette dépense ?
+        -> fait
