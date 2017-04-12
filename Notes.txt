@@ -25,12 +25,15 @@ thêatre(entrée, année, mois, dépenses, recette, profit);
 Ajouts possibles :
     - pour subvention on pourrait ajouter un attribut action car une subvention est donnée pour réaliser quelque chose de particulier.
         -> je l'associe à une représentation donc l'action déjà défini non ?
+        Ok ça me va, j'étais persuadé que c'était pour plein d'autres choses que simplement créer ou acheter une pièce.
 
     - pour représentation on pourrait ajouter un attribut id_theatre (théâtre ayant mise en scène le spectacle et qui le joue).
         -> on a id_spec, dans représentation, qui donne une compagnie avec id_comp qui est celle qui a joué dans le spectacle [je rajoute metteur en scène dans la table 'compagnie']
+        Ok c'est bon.
 
     - pour vente_piece on pourrait ajouter un attribut id_theatre (théâtre qui achète et va donc mettre en scène le spectacle de la compagnie courante).
         -> il y a id_spec qui nous permet de retrouver la compagnie qui nous a vendu la pièce [idem avec achat]
+        Mais on ne peut pas savoir qui l'a acheté ?
 
     - pour les dépenses on ajoute une action / un objectif qui entraine cette dépense ?
         -> fait
