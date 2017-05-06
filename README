@@ -1,1 +1,13 @@
 Projet de BDAv 2017 - Le Théâtre du Chrysantème
+
+- mettre à jour le MCD (ajout Billeterie)
+- mettre à jour / au propre le MLD (ajout Billeterie)
+- faire les triggers (chacun de notre côté):
+    - faire les politiques tarifaires
+    - quand new dépense, sub at spectacle.rentabilite
+    - quand new Subvention, add at spectacle.rentabilite
+    - quand new vente, add at spectacle.rentabilite
+    - quand new achat, sub at spectacle.rentabilite
+    - les triggers de la Billeterie
+- faire les tests
+- faire le script de remplissage
