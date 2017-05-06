@@ -9,7 +9,7 @@ DROP TABLE IF EXISTS Achat ;
 DROP TABLE IF EXISTS Representation ;
 DROP TABLE IF EXISTS Spectacle ;
 DROP TABLE IF EXISTS Compagnie ;
-DROP TABLE IF EXISTS Historique ;
+DROP TABLE IF EXISTS Billeterie ;
 
 CREATE TABLE Spectacle (
 	id_spectacle SERIAL PRIMARY KEY,
@@ -89,11 +89,12 @@ CREATE TABLE Reservation (
 	id_representation INTEGER REFERENCES Representation
 );
 
-CREATE TABLE Historique (
-	entree DATE PRIMARY KEY,
-	depense REAL CHECK (depense >= 0),
-	recette REAL CHECK (recette >= 0),
-	total REAL
+CREATE TABLE Billeterie (
+	entree SERIAL PRIMARY KEY,
+	date_entree DATE NOT NULL,
+	tarif VARCHAR NOT NULL,
+	prix REAL CHECK (prix > 0),
+	id_representation INTEGER REFERENCES Representation
 );
 
 CREATE OR REPLACE FUNCTION politique(prix REAL) RETURNS REAL AS $$
@@ -111,7 +112,6 @@ CREATE OR REPLACE check_place_plein() RETURNS TRIGGER AS $$
 	END;
 $$ LANGUAGE plpgsql;
 
-
 /*
 	Avant avoir acheté un billet au tarif plein,
 	on vérifie qu'il reste de la place
@@ -124,6 +124,7 @@ CREATE TRIGGER achat_tarif_plein_bef
 
 CREATE OR REPLACE FUNCTION add_place_plein() RETURNS TRIGGER AS $$
 	DECLARE
+		cur_date = '2017-05-06';
 		prix REAL;
     BEGIN
         IF (old.nb_places_max - (old.nb_tarif_plein + old.nb_tarif_reduit + old.nb_places_reservees)) > 0  THEN
@@ -147,17 +148,6 @@ CREATE TRIGGER achat_tarif_plein_aft
 
 
 
-
-
-
-
-/*
-CREATE TRIGGER achat_tarif_reduit
-    BEFORE UPDATE OF nb_tarif_reduit ON Representation
-    FOR EACH ROW
-    EXECUTE PROCEDURE check_place_reduit()
-;
-*/
 
 INSERT INTO Spectacle (nom_spectacle, tarif_plein, tarif_reduit, rentabilite)
 VALUES
