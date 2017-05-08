@@ -126,7 +126,7 @@ BEGIN
 		END IF;
 		return prix;
 	ELSE
-		IF ((max - (max*0.3)) >= n) THEN
+		IF ((max - (max*0.7)) >= n) THEN
 			return (prix - (prix*0.2));
 		END IF;
 		return prix;
