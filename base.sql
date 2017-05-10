@@ -36,33 +36,33 @@ CREATE TABLE Representation (
 	nb_places_reservees INTEGER DEFAULT 0,
 	duree INTEGER CHECK (duree > 0),
 	gain REAL CHECK (gain >= 0),
-	id_spectacle INTEGER REFERENCES Spectacle
+	id_spectacle INTEGER REFERENCES Spectacle ON DELETE CASCADE
 );
 
 CREATE TABLE Creation (
-	id_spectacle INTEGER PRIMARY KEY REFERENCES Spectacle
+	id_spectacle INTEGER PRIMARY KEY REFERENCES Spectacle ON DELETE CASCADE
 );
 
 CREATE TABLE Achat (
-	id_spectacle INTEGER PRIMARY KEY REFERENCES Spectacle,
+	id_spectacle INTEGER PRIMARY KEY REFERENCES Spectacle ON DELETE CASCADE,
 	date_achat DATE NOT NULL,
 	valeur REAL NOT NULL CHECK (valeur > 0),
-	id_compagnie INTEGER REFERENCES Compagnie
+	id_compagnie INTEGER REFERENCES Compagnie ON DELETE CASCADE
 );
 
 CREATE TABLE Vente (
 	id_vente SERIAL PRIMARY KEY,
 	date_vente DATE NOT NULL,
 	valeur REAL CHECK (valeur > 0),
-	id_spectacle INTEGER REFERENCES Spectacle,
-	id_compagnie INTEGER REFERENCES Compagnie
+	id_spectacle INTEGER REFERENCES Spectacle ON DELETE CASCADE,
+	id_compagnie INTEGER REFERENCES Compagnie ON DELETE CASCADE
 );
 
 CREATE TABLE Subvention (
 	id_subvention SERIAL PRIMARY KEY,
 	nom_mecene VARCHAR NOT NULL,
 	valeur REAL CHECK (valeur > 0),
-	id_spectacle INTEGER REFERENCES Spectacle
+	id_spectacle INTEGER REFERENCES Spectacle ON DELETE CASCADE
 );
 
 CREATE TABLE Depenses (
@@ -70,15 +70,15 @@ CREATE TABLE Depenses (
 	date_depense DATE NOT NULL,
 	description VARCHAR NOT NULL,
 	cout REAL CHECK (cout > 0),
-	id_spectacle INTEGER REFERENCES Spectacle
+	id_spectacle INTEGER REFERENCES Spectacle ON DELETE CASCADE
 );
 
 CREATE TABLE Interne (
-	id_representation INTEGER PRIMARY KEY REFERENCES Representation
+	id_representation INTEGER PRIMARY KEY REFERENCES Representation ON DELETE CASCADE
 );
 
 CREATE TABLE Externe (
-	id_representation INTEGER PRIMARY KEY REFERENCES Representation,
+	id_representation INTEGER PRIMARY KEY REFERENCES Representation ON DELETE CASCADE,
 	lieu VARCHAR NOT NULL,
 	ville VARCHAR NOT NULL,
 	pays VARCHAR NOT NULL
@@ -88,7 +88,7 @@ CREATE TABLE Reservation (
 	id_reservation SERIAL PRIMARY KEY,
 	date_reservation DATE NOT NULL,
 	date_limite DATE NOT NULL,
-	id_representation INTEGER REFERENCES Representation
+	id_representation INTEGER REFERENCES Representation ON DELETE CASCADE
 );
 
 CREATE TABLE Billeterie (
@@ -96,7 +96,7 @@ CREATE TABLE Billeterie (
 	date_entree DATE NOT NULL,
 	tarif VARCHAR NOT NULL,
 	prix REAL CHECK (prix > 0),
-	id_representation INTEGER REFERENCES Representation
+	id_representation INTEGER REFERENCES Representation ON DELETE CASCADE
 );
 
 /*************************************/
