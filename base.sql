@@ -108,7 +108,7 @@ CREATE OR REPLACE FUNCTION politique(choix INTEGER, prix REAL, date_b DATE, date
 DECLARE
 	cur_date DATE = '2017-05-06';
 BEGIN
-	case
+	CASE
 	WHEN choix = 1 THEN
 		IF ((date_b + 5) >= cur_date) THEN
 			return (prix - (prix*0.2));
@@ -126,7 +126,7 @@ BEGIN
 		END IF;
 		return prix;
 	ELSE
-		IF ((max - (max*0.3)) >= n) THEN
+		IF ((max - (max*0.7)) >= n) THEN
 			return (prix - (prix*0.2));
 		END IF;
 		return prix;
@@ -149,7 +149,7 @@ CREATE OR REPLACE FUNCTION check_place() RETURNS TRIGGER AS $$
 			SELECT COUNT(*) INTO tmp FROM Reservation WHERE old.id_representation = Reservation.id_representation;
 			UPDATE Representation SET nb_places_reservees = tmp WHERE old.id_representation = id_representation;
 			IF (old.nb_places_max - (old.nb_tarif_plein + old.nb_tarif_reduit + new.nb_places_reservees)) <= 0 THEN
-				RAISE NOTICE 'Plus de place';
+				RAISE EXCEPTION 'Plus de place';
 				return null;
 			END IF;
 		END IF;
@@ -253,7 +253,7 @@ CREATE OR REPLACE FUNCTION check_place_reservation() RETURNS TRIGGER AS $$
 		limite INTEGER = 3;
 	BEGIN
 		IF ((cur_date + limite) > old.date_representation) THEN
-			RAISE NOTICE 'Il est trop tard pour faire une réservation pour ce spectacle';
+			RAISE EXCEPTION 'Il est trop tard pour faire une réservation pour ce spectacle';
 			return null;
 		END IF;
 
@@ -262,7 +262,7 @@ CREATE OR REPLACE FUNCTION check_place_reservation() RETURNS TRIGGER AS $$
 			SELECT COUNT(*) INTO tmp FROM Reservation WHERE old.id_representation = Reservation.id_representation;
 			UPDATE Representation SET nb_places_reservees = tmp WHERE old.id_representation = id_representation;
 			IF (old.nb_places_max - (old.nb_tarif_plein + old.nb_tarif_reduit + new.nb_places_reservees)) <= 0 THEN
-				RAISE NOTICE 'Plus de place';
+				RAISE EXCEPTION 'Plus de place';
 				return null;
 			END IF;
 		END IF;
@@ -366,7 +366,7 @@ CREATE TRIGGER undo_subvention
 CREATE OR REPLACE FUNCTION check_appartenance() RETURNS TRIGGER AS $$
 	BEGIN
 		IF ((SELECT COUNT(*) FROM Achat WHERE id_spectacle = new.id_spectacle) > 0) THEN
-			RAISE NOTICE 'On ne peut pas vendre un spectacle qui ne nous appartient pas.';
+			RAISE EXCEPTION 'On ne peut pas vendre un spectacle qui ne nous appartient pas.';
 			return null;
 		END IF;
 		return new;
