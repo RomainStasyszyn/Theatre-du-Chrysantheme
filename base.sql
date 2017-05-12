@@ -116,7 +116,7 @@ BEGIN
 		return prix;
 	WHEN choix = 2 THEN
 	 	IF ((date_f - 15) <= cur_date) THEN
-			IF ((max - (max*0.3)) >= n) THEN
+			IF ((max - (max*0.7)) >= n) THEN
 				return (prix - (prix*0.5));
 			ELSIF ((max - (max*0.5)) >= n) THEN
 				return (prix - (prix*0.3));
