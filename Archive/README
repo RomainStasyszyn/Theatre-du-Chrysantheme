@@ -1,0 +1,19 @@
+Projet de BDAv 2017 - Le Théâtre du Chrysantème
+par Samuel ELBEZ & Romain STASYSZYN
+
+A LANCER DANS L'ORDRE AVEC '\i [script].sql'
+
+Lancer init.sql
+
+ OU
+ 
+1. base.sql contient les tables ainsi que les triggers
+2. insert.sql ajoute des données dans les tables
+3. interface.sql qui simplifie quelques actions
+4. Lancer la fonction clean() avec 'SELECT clean()' pour nettoyer la base des réservations périmées
+
+Dans interface.sql :
+
+ - buyFullPrice(n, i) -> achat de n places au tarif plein pour la représentation i
+ - buyHalfPrice(n, i) -> achat de n places au tarif réduit pour la représentation i
+ - multipleReservation -> faire la réservation de n places pour la représentation i
