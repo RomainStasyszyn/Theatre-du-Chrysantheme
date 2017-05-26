@@ -6,7 +6,7 @@ DROP TABLE IF EXISTS Subvention ;
 DROP TABLE IF EXISTS Depenses ;
 DROP TABLE IF EXISTS Creation ;
 DROP TABLE IF EXISTS Achat ;
-DROP TABLE IF EXISTS Billeterie ;
+DROP TABLE IF EXISTS Billetterie ;
 DROP TABLE IF EXISTS Representation ;
 DROP TABLE IF EXISTS Spectacle ;
 DROP TABLE IF EXISTS Compagnie ;
@@ -91,7 +91,7 @@ CREATE TABLE Reservation (
 	id_representation INTEGER REFERENCES Representation ON DELETE CASCADE
 );
 
-CREATE TABLE Billeterie (
+CREATE TABLE Billetterie (
 	entree SERIAL PRIMARY KEY,
 	date_entree DATE NOT NULL,
 	tarif VARCHAR NOT NULL,
@@ -261,6 +261,7 @@ CREATE TRIGGER achat_tarif_plein_bef
 CREATE TRIGGER achat_tarif_reduit_bef
     BEFORE UPDATE OF nb_tarif_reduit ON Representation
     FOR EACH ROW
+	WHEN (pg_trigger_depth() < 1)
     EXECUTE PROCEDURE check_place()
 ;
 
@@ -280,7 +281,7 @@ CREATE OR REPLACE FUNCTION add_place_plein() RETURNS TRIGGER AS $$
 				SET gain = old.gain + politique(old.pol, p, old.date_debut, old.date_representation, old.nb_places_max, (old.nb_tarif_plein + old.nb_tarif_reduit + old.nb_places_reservees))
 				WHERE id_representation = old.id_representation;
 			UPDATE Spectacle SET rentabilite = rentabilite + politique(old.pol, p, old.date_debut, old.date_representation, old.nb_places_max, (old.nb_tarif_plein + old.nb_tarif_reduit + old.nb_places_reservees)) WHERE old.id_spectacle = spectacle.id_spectacle;
-			INSERT INTO Billeterie(date_entree, tarif, prix, id_representation) VALUES (cur_date, 'tarif plein', politique(old.pol, p, old.date_debut, old.date_representation, old.nb_places_max, (old.nb_tarif_plein + old.nb_tarif_reduit + old.nb_places_reservees)), old.id_representation);
+			INSERT INTO Billetterie(date_entree, tarif, prix, id_representation) VALUES (cur_date, 'tarif plein', politique(old.pol, p, old.date_debut, old.date_representation, old.nb_places_max, (old.nb_tarif_plein + old.nb_tarif_reduit + old.nb_places_reservees)), old.id_representation);
         END IF;
         return new;
     END;
@@ -293,6 +294,7 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER achat_tarif_plein_aft
     AFTER UPDATE OF nb_tarif_plein ON Representation
     FOR EACH ROW
+	WHEN (pg_trigger_depth() < 1)
     EXECUTE PROCEDURE add_place_plein()
 ;
 
@@ -312,7 +314,7 @@ CREATE OR REPLACE FUNCTION add_place_reduit() RETURNS TRIGGER AS $$
 				SET gain = old.gain + politique(old.pol, p, old.date_debut, old.date_representation, old.nb_places_max, (old.nb_tarif_plein + old.nb_tarif_reduit + old.nb_places_reservees))
 				WHERE id_representation = old.id_representation;
 			UPDATE Spectacle SET rentabilite = rentabilite + politique(old.pol, p, old.date_debut, old.date_representation, old.nb_places_max, (old.nb_tarif_plein + old.nb_tarif_reduit + old.nb_places_reservees)) WHERE old.id_spectacle = spectacle.id_spectacle;
-			INSERT INTO Billeterie(date_entree, tarif, prix, id_representation) VALUES (cur_date, 'tarif reduit', politique(old.pol, p, old.date_debut, old.date_representation, old.nb_places_max, (old.nb_tarif_plein + old.nb_tarif_reduit + old.nb_places_reservees)), old.id_representation);
+			INSERT INTO Billetterie(date_entree, tarif, prix, id_representation) VALUES (cur_date, 'tarif reduit', politique(old.pol, p, old.date_debut, old.date_representation, old.nb_places_max, (old.nb_tarif_plein + old.nb_tarif_reduit + old.nb_places_reservees)), old.id_representation);
         end if;
         return new;
     END;
@@ -597,4 +599,28 @@ CREATE TRIGGER undo_vente
 	BEFORE UPDATE OR DELETE ON Achat
 	FOR EACH ROW
 	EXECUTE PROCEDURE unmake_achat()
+;
+
+/*************************************/
+
+CREATE OR REPLACE FUNCTION give_refound() RETURNS TRIGGER AS $$
+	DECLARE
+		val INTEGER;
+	BEGIN
+		IF ((SELECT tarif FROM Billetterie WHERE entree = old.entree) = 'tarif plein') THEN
+			UPDATE Representation SET nb_tarif_plein = nb_tarif_plein - 1 WHERE id_representation = old.id_representation;
+		ELSE
+			UPDATE Representation SET nb_tarif_reduit = nb_tarif_reduit - 1 WHERE id_representation = old.id_representation;
+		END IF;
+		UPDATE Representation SET gain = gain - old.prix WHERE id_representation = old.id_representation;
+		SELECT id_spectacle INTO val FROM Representation WHERE id_representation = old.id_representation;
+		UPDATE Spectacle SET rentabilite = rentabilite - old.prix WHERE id_spectacle = val;
+		return old;
+	END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER refound
+	BEFORE DELETE ON Billetterie
+	FOR EACH ROW
+	EXECUTE PROCEDURE give_refound()
 ;
