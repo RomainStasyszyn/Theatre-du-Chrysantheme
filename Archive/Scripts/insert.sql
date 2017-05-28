@@ -71,3 +71,20 @@ VALUES
 ('2017-02-01', 'Décors', 10000, 9),
 ('2017-03-03', 'Costumes & Décors', 6000, 10)
 ;
+
+/*
+    Achat d'un billet à tarif plein
+*/
+--UPDATE Representation SET nb_tarif_plein = nb_tarif_plein + 1 where id_representation = 1;
+--UPDATE Representation SET nb_tarif_plein = nb_tarif_plein + 1 where id_representation = 2;
+
+/*
+    Achat d'un billet à tarif réduit
+*/
+--UPDATE Representation SET nb_tarif_reduit = nb_tarif_reduit + 1 where id_representation = 1;
+
+/*
+    Faire une réservation
+*/
+--UPDATE Representation SET nb_places_reservees = nb_places_reservees + 1 where id_representation = 1;
+--UPDATE Representation SET nb_places_reservees = nb_places_reservees + 1 where id_representation = 1;

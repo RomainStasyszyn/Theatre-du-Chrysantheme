@@ -213,7 +213,7 @@ BEGIN
 		END IF;
 		return prix;
 	ELSE
-		IF ((max - (max*0.7)) >= n) THEN
+		IF ((max - ((max*0.7)+1)) >= n) THEN
 			return (prix - (prix*0.2));
 		END IF;
 		return prix;
@@ -464,7 +464,7 @@ CREATE TRIGGER undo_subvention
 CREATE OR REPLACE FUNCTION check_appartenance() RETURNS TRIGGER AS $$
 	BEGIN
 		IF ((SELECT COUNT(*) FROM Achat WHERE id_spectacle = new.id_spectacle) > 0) THEN
-			RAISE EXCEPTION 'On ne peut pas vendre un spectacle qui ne nous appartient pas.';
+			RAISE EXCEPTION 'On ne peut ni vendre, ni faire de depense pour un spectacle qui ne nous appartient pas.';
 			return null;
 		END IF;
 		return new;
