@@ -1,4 +1,4 @@
-#Projet de BDAv 2017 - Le Théâtre du Chrysantème
+Projet de BDAv 2017 - Le Théâtre du Chrysantème
 par Samuel ELBEZ & Romain STASYSZYN
 
 A LANCER DANS L'ORDRE AVEC '\i [script].sql'
